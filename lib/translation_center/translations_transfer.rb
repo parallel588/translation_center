@@ -116,12 +116,7 @@ module TranslationCenter
       puts "Started exporting translations in #{locale}"
       TranslationCenter::TranslationKey.translated(locale).each do |key|
         begin
-          puts ""
-          puts "about to translate key: #{key.id}"
           key.add_to_hash(result, locale)  
-          puts "locale: #{locale}"
-          puts "result: #{result}"
-          puts ""
         rescue
           puts "Error writing key: #{key.name} to yaml for #{locale}"
         end

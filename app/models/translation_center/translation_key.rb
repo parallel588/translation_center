@@ -167,10 +167,7 @@ module TranslationCenter
         # if we are at the bottom level just return the translation
         if(levels.count == 1)
           translation = self.accepted_translation_in(lang)
-          puts "self: #{self.inspect}"
-          puts "translation: #{translation.inspect}"
           formatted = translation.value
-          puts "formatted: #{formatted}"
           # in case of arrays remove the unneeded header
           formatted.to_yaml.gsub!("---\n" , '') if formatted.is_a?(Array)
           {current_level => formatted}
