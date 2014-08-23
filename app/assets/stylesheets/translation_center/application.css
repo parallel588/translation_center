@@ -9,7 +9,6 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require jquery.ui.all
  *= require_tree .
   */
 
@@ -24,7 +23,7 @@
   margin-left: 5px;
 }
 .navbar .brand,.navbar span, .navbar .nav > li > a, .navbar a, .navbar .nav_text {
-  color: white !important;
+  /*color: white !important;*/
 }
 
 .navbar li.dropdown ul.dropdown-menu a.language_to {
@@ -32,7 +31,7 @@
 }
 
 .navbar-inner {
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #009ED2), color-stop(100%, #008CBA)) !important;
+  /*background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #009ED2), color-stop(100%, #008CBA)) !important;*/
 }
 
 .navbar .brand {

@@ -1,7 +1,7 @@
 module TranslationCenter
 
   class TranslationKey < ActiveRecord::Base
-    attr_accessible :name, :last_accessed, :category_id
+    # attr_accessible :name, :last_accessed, :category_id
     belongs_to :category
     has_many :translations, dependent: :destroy
 
@@ -24,7 +24,7 @@ module TranslationCenter
       category_name = self.name.to_s.split('.').first
       # if one word then add to general category
       category_name = self.name.to_s.split('.').size == 1 ? 'general' : self.name.to_s.split('.').first
-      self.category = TranslationCenter::Category.find_or_create_by_name(category_name)
+      self.category = TranslationCenter::Category.find_or_create_by(name: category_name)
       self.last_accessed = Time.now
     end
 
@@ -32,7 +32,7 @@ module TranslationCenter
     def update_status(lang)
       if self.translations.in(lang).blank?
         self.update_attribute("#{lang}_status", 'untranslated')
-      elsif !self.translations.in(lang).accepted.blank?
+      elsif !self.translations.in(lang).accepted(self.id).blank?
         self.update_attribute("#{lang}_status", 'translated')
       else
         self.update_attribute("#{lang}_status", 'pending')
@@ -47,7 +47,7 @@ module TranslationCenter
 
     # returns the accepted translation in certain language
     def accepted_translation_in(lang)
-      self.translations.accepted.in(lang).first
+      self.translations.accepted(self.id).in(lang).first
     end
 
     # returns true if the translation key is untranslated (has no translations) in the language
@@ -167,7 +167,10 @@ module TranslationCenter
         # if we are at the bottom level just return the translation
         if(levels.count == 1)
           translation = self.accepted_translation_in(lang)
+          puts "self: #{self.inspect}"
+          puts "translation: #{translation.inspect}"
           formatted = translation.value
+          puts "formatted: #{formatted}"
           # in case of arrays remove the unneeded header
           formatted.to_yaml.gsub!("---\n" , '') if formatted.is_a?(Array)
           {current_level => formatted}

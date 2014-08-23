@@ -19,8 +19,8 @@ module TranslationCenter
     # GET /categories/1
     # GET /categories/1.json
     def show
-      @category = Category.find(params[:id])
-      session[:current_filter] = params[:filter] || session[:current_filter]
+      @category = Category.find(category_params[:id])
+      session[:current_filter] = category_params[:filter] || session[:current_filter]
       @keys = @category.send("#{session[:current_filter]}_keys", session[:lang_to]).offset(@page - 1).limit(TranslationKey::PER_PAGE)
       @untranslated_keys_count = @category.untranslated_keys(session[:lang_to]).count
       @translated_keys_count = @category.translated_keys(session[:lang_to]).count
@@ -34,7 +34,7 @@ module TranslationCenter
 
     # GET /categories/1/more_keys.js
     def more_keys
-      @category = Category.find(params[:category_id])
+      @category = Category.find(category_params[:category_id])
       @keys = @category.send("#{session[:current_filter]}_keys", session[:lang_to]).offset(@page - 1).limit(TranslationKey::PER_PAGE)
       respond_to do |format|
         format.js { render 'keys' }
@@ -45,13 +45,17 @@ module TranslationCenter
     # DELETE /categories/1
     # DELETE /categories/1.json
     def destroy
-      @category = Category.find(params[:id])
+      @category = Category.find(category_params[:id])
       @category.destroy
   
       respond_to do |format|
         format.html { redirect_to categories_url }
         format.json { head :no_content }
       end
+    end
+
+    def category_params
+      params.permit!
     end
   end
 end

@@ -19,7 +19,7 @@ module TranslationCenter
     def translation_langs_filters
       session[:current_filter] ||= 'untranslated'
       session[:lang_from] ||= :en
-      session[:lang_to] = params[:lang_to] || session[:lang_to] || :en
+      session[:lang_to] = app_params[:lang_to] || session[:lang_to] || :en
       I18n.locale = session[:lang_from] || I18n.default_locale
     end
 
@@ -30,8 +30,12 @@ module TranslationCenter
     end
 
     def set_page_number
-      params[:page] ||= 1
-      @page = params[:page].to_i
+      app_params[:page] ||= 1
+      @page = app_params[:page].to_i
+    end
+
+    def app_params
+      params.permit!
     end
 
   end

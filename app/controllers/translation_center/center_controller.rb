@@ -8,14 +8,14 @@ module TranslationCenter
 
     # set language user translating from
     def set_language_from
-      session[:lang_from] = params[:lang].to_sym
+      session[:lang_from] = center_params[:lang].to_sym
       I18n.locale = session[:lang_from]
       render nothing: true
     end
 
     # set language user translating to
     def set_language_to
-      session[:lang_to] = params[:lang].to_sym
+      session[:lang_to] = center_params[:lang].to_sym
       
       respond_to do |format|
         format.html { redirect_to root_url } 
@@ -28,7 +28,7 @@ module TranslationCenter
       @langs = @stats.keys
 
       # build an empty activity query
-      @activity_query = ActivityQuery.new(params[:activity_query])
+      @activity_query = ActivityQuery.new(center_params[:activity_query])
 
       #TODO perpage constant should be put somewhere else
       @translations_changes = @activity_query.activities.offset(Translation::CHANGES_PER_PAGE * (@page - 1)).limit(Translation::CHANGES_PER_PAGE)
@@ -41,8 +41,8 @@ module TranslationCenter
     end
 
     def search_activity
-      @translations_changes = ActivityQuery.new(params[:activity_query]).activities.offset(Translation::CHANGES_PER_PAGE * (@page - 1)).limit(Translation::CHANGES_PER_PAGE)
-      @total_pages =  (ActivityQuery.new(params[:activity_query]).activities.count / (Translation::CHANGES_PER_PAGE * 1.0)).ceil
+      @translations_changes = ActivityQuery.new(center_params[:activity_query]).activities.offset(Translation::CHANGES_PER_PAGE * (@page - 1)).limit(Translation::CHANGES_PER_PAGE)
+      @total_pages =  (ActivityQuery.new(center_params[:activity_query]).activities.count / (Translation::CHANGES_PER_PAGE * 1.0)).ceil
       
       respond_to do |format|
         format.js
@@ -51,12 +51,16 @@ module TranslationCenter
 
     def manage
       # if locale is all then send no locale
-      locale = params[:locale] == 'all' ? nil : params[:locale]
-      TranslationCenter.send params[:manage_action], locale
+      locale = center_params[:locale] == 'all' ? nil : center_params[:locale]
+      TranslationCenter.send center_params[:manage_action], locale
 
       respond_to do |format|
         format.js
       end
+    end
+
+    def center_params
+      params.permit!
     end
 
   end

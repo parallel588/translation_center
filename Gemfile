@@ -25,14 +25,14 @@ gem 'ya2yaml'
 # gem 'linecache19', :git => 'git://github.com/mark-moseley/linecache'
 gem 'devise'
 gem 'font-awesome-rails'
-gem 'audited-activerecord'
+gem 'audited-activerecord', '4.0.0.rc1', git: 'https://github.com/collectiveidea/audited'
 
 group :development do
-  gem 'ruby-debug-base19x', '~> 0.11.30.pre4'
-  gem 'ruby-debug19'
-  gem 'debugger'
-  gem 'better_errors'
-  gem 'binding_of_caller'
+  # gem 'ruby-debug-base19x', '~> 0.11.30.pre4'
+  # gem 'ruby-debug19'
+  # gem 'debugger'
+  # gem 'better_errors'
+  # gem 'binding_of_caller'
 end
 
 # Declare any dependencies that are still in development here instead of in

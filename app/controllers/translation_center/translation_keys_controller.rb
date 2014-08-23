@@ -11,9 +11,9 @@ module TranslationCenter
       @key_before_status = @translation_key.status(session[:lang_to])
       respond_to do |format|
         # only admin can edit accepted translations
-        if (current_user.can_admin_translations? || !@translation.accepted?) && !params[:value].strip.blank?
+        if (current_user.can_admin_translations? || !@translation.accepted?) && !trans_params[:value].strip.blank?
           # use yaml.load to handle arrays
-          @translation.update_attributes(value: YAML.load(params[:value].strip), status: 'pending')
+          @translation.update_attributes(value: YAML.load(trans_params[:value].strip), status: 'pending')
           # translation added by admin is considered the accepted one as it is trusted
           @translation.accept if current_user.can_admin_translations? && CONFIG['accept_admin_translations']
           format.json {render json: { value: @translation.value, status: @translation.key.status(@translation.lang), key_before_status: @key_before_status  } }
@@ -25,11 +25,8 @@ module TranslationCenter
 
     # GET /translation_keys/translations
     def translations
-      if params[:sort_by] == 'votes'
-        @translations = @translation_key.translations.in(session[:lang_to]).sorted_by_votes
-      else
-        @translations = @translation_key.translations.in(session[:lang_to]).order('created_at DESC')
-      end
+      @translations = @translation_key.translations.in(session[:lang_to]).order('created_at DESC')
+      
       respond_to do |format|
         format.js
       end
@@ -42,10 +39,10 @@ module TranslationCenter
     # PUT /translation_keys/1
     # PUT /translation_keys/1.json
     def update
-      params[:value].strip!
+      trans_params[:value].strip!
       @old_value = @translation_key.category.name
       respond_to do |format|
-        if !params[:value].blank? && @translation_key.update_attribute(:name, params[:value])
+        if !trans_params[:value].blank? && @translation_key.update_attribute(:name, trans_params[:value])
           format.json { render json: {  new_value: @translation_key.name, new_category: @translation_key.category.name, old_category: @old_value, key_id: @translation_key.id } }
         else
           format.json { render json: @translation_key.errors, status: :unprocessable_entity }
@@ -70,10 +67,10 @@ module TranslationCenter
     # GET /translation_keys/search.json
     def search
       # if full name provided then get the key and redirect to it, otherwise return similar in json
-      if params[:search_key_name].present?
-        @translation_key = TranslationKey.find_by_name(params[:search_key_name])
+      if trans_params[:search_key_name].present?
+        @translation_key = TranslationKey.find_by_name(trans_params[:search_key_name])
       else
-        @key_names = TranslationKey.where('name LIKE ?', "%#{params[:query]}%")
+        @key_names = TranslationKey.where('name LIKE ?', "%#{trans_params[:query]}%")
       end
 
       respond_to do |format|
@@ -85,9 +82,12 @@ module TranslationCenter
     protected
 
     def get_translation_key
-      id = params[:translation_key_id] || params[:id]
+      id = trans_params[:translation_key_id] || trans_params[:id]
       @translation_key = TranslationKey.find(id)
     end
     
+    def trans_params
+      params.permit!
+    end
   end
 end
