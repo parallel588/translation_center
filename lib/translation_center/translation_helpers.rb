@@ -60,7 +60,7 @@ module TranslationCenter
     complete_key = prepare_key(key, options) # prepare complete key
 
     # add the new key or update it
-    translation_key = TranslationCenter::TranslationKey.find_or_create_by_name(complete_key)
+    translation_key = TranslationCenter::TranslationKey.find_or_create_by(name: complete_key)
     #  UNCOMMENT THIS LATER TO SET LAST ACCESSED AT
     # translation_key.update_attribute(:last_accessed, Time.now)
 
@@ -74,10 +74,14 @@ module TranslationCenter
       options.each_pair{ |key, value| val.gsub!("%{#{key.to_s}}", value.to_s) } if val.is_a?(String)
 
       if val.blank? && !translation_key.has_children?
+        # if the key has no translation show the key last identifier to modify
         throw(:exception, I18n::MissingTranslation.new(locale, complete_key, options))
+        #translation_value = key.split('.').last
+        #return wrap_span(translation_value, translation_key)
       elsif translation_key.has_children?
         # TODO should use ancestors for keys
-        return translation_key.children_translations(locale)
+        #return translation_key.children_translations(locale)
+        return wrap_span(translation_key.children_translations(locale), translation_key)
       end
       wrap_span(val, translation_key)
     else
@@ -113,7 +117,6 @@ module I18n
         translation_key = keys
         # remove locale
         translation_key.shift
-
         translation_key = TranslationCenter::TranslationKey.find_by_name(translation_key.join('.'))
         # don't put the inspector class if inspector is off or the key belongs to translation_center
         if TranslationCenter::CONFIG['inspector'] == 'off' || category == 'translation_center'

@@ -24,7 +24,7 @@
          .control-group
             %label.control-label{:for => "subject"} Subject (optional):
             .controls
-               %input#subject.input-xlarge{:name => "translation_center_feedback[subject]", :placeholder => "", :type => "text", value: "Translation Center Exception (version #{Gem.loaded_specs["translation_center"].version})"}/
+               %input#subject.input-xlarge{:name => "translation_center_feedback[subject]", :placeholder => "", :type => "text", value: "Translation Center Exception (version #{TranslationCenter::VERSION})"}/
          .control-group
             %label.control-label{:for => "subject"} Comments (optional):
             .controls
