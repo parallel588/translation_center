@@ -1,3 +1,9 @@
+#flash-display
+  - flash.each do |type, msg|
+    %div{:class => "alert alert-#{type == :notice ? "success" : type} fadeout", "data-dismiss" => "alert"}
+      %button.close &times;
+      = msg if msg.is_a?(String)
+
 %h1
   = t('.controls')
 
@@ -30,6 +36,8 @@
           = t('.pending')
         %th
           = t('.untranslated')
+        %th
+          = 'Update language in page'
 
 
     %tbody
@@ -48,6 +56,8 @@
             = "#{@stats[lang]['pending_count']}(#{@stats[lang]['pending_percentage']}%)"
           %td
             = "#{@stats[lang]['untranslated_count']}(#{@stats[lang]['untranslated_percentage']}%)"
+          %td
+            = link_to "Update language", update_language_path(lang: lang.to_s)
 %h1
   = t('.activity')
 .span12

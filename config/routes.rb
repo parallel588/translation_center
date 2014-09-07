@@ -23,6 +23,7 @@ TranslationCenter::Engine.routes.draw do
   end
 
   get '/dashboard' => 'center#dashboard', as: :dashboard
+  get '/update_language' => 'center#update_language'
   get '/search_activity' => 'center#search_activity', as: :search_activity
   post '/manage_translations' => 'center#manage', as: :manage_translations
 

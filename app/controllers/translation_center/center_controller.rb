@@ -63,5 +63,15 @@ module TranslationCenter
       params.permit!
     end
 
+    def update_language
+      begin
+        TranslationCenter.db2yaml(params[:lang])
+        flash[:success] = "Language #{params[:lang]} updated"
+      rescue Exception => e
+        flash[:warning] = "Language #{params[:lang]} could not be updated. Reason: #{e}"
+      end
+      redirect_to dashboard_path
+    end
+
   end
 end
