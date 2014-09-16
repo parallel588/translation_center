@@ -20,8 +20,13 @@ module TranslationCenter
     # GET /categories/1.json
     def show
       @category = Category.find(category_params[:id])
+      @page_name = params[:page_name]
       session[:current_filter] = category_params[:filter] || session[:current_filter]
-      @keys = @category.send("#{session[:current_filter]}_keys", session[:lang_to]).offset(@page - 1).limit(TranslationKey::PER_PAGE)
+      if params[:page].blank?
+        @keys = @category.send("#{session[:current_filter]}_keys", session[:lang_to]).offset(@page - 1).limit(TranslationKey::PER_PAGE)
+      else
+        @keys = @category.keys.where("name LIKE ? ", "%#{@page_name}%")
+      end
       @untranslated_keys_count = @category.untranslated_keys(session[:lang_to]).count
       @translated_keys_count = @category.translated_keys(session[:lang_to]).count
       @pending_keys_count = @category.pending_keys(session[:lang_to]).count
@@ -30,6 +35,11 @@ module TranslationCenter
         format.html # show.html.erb
         format.js
       end
+    end
+
+    def pages
+      @category = Category.find(category_params[:id])
+      @keys = @category.keys.where("name LIKE ? ", "%#{page_name}%")
     end
 
     # GET /categories/1/more_keys.js

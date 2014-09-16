@@ -42,5 +42,17 @@ module TranslationCenter
       self.name.titleize
     end
 
+    def get_pages
+      response = []
+      self.keys.each do |k|
+        response << k.name.split('.')[1] unless (k.name.split('.').length < 1)
+      end
+      response.uniq!
+    end
+
+    def get_translations_for_page(page_name)
+      self.keys.where("name LIKE ? ", "%#{page_name}%")
+    end
+
   end
 end
