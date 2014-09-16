@@ -28,12 +28,6 @@
   %li
     #loading
       = image_tag 'translation_center/loading.gif'
-%ul.nav.nav-pills
-  - pages = @category.get_pages
-  - pages.each do |page|
-    %li
-      %a{href: category_path(id: @category.id, page_name: page)}
-        = "#{page} [#{@category.get_translations_for_page(page).count}]"
   
 .span9#category
   = render 'translation_center/translation_keys/translation_keys', translation_keys: @keys, category: @category
