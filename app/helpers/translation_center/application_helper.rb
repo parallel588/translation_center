@@ -33,7 +33,7 @@ module TranslationCenter
 
     # returns true if the current user can admin translations
     def translation_admin?
-      current_user.respond_to?(:can_admin_translations?) && current_user.can_admin_translations?
+      current_spree_user.respond_to?(:can_admin_translations?) && current_spree_user.can_admin_translations?
     end
 
     # returns formated date
@@ -51,7 +51,7 @@ module TranslationCenter
       else
         "#{current_path}?lang_to=#{locale.to_s}"
       end
-        
+
     end
 
   end

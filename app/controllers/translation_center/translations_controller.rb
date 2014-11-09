@@ -8,7 +8,7 @@ module TranslationCenter
     # POST /translations/1/vote
     def vote
       @translation = Translation.find(trans_params[:translation_id])
-      current_user.likes(@translation)
+      translator_current_user.likes(@translation)
       respond_to do |format|
         format.js
       end
@@ -17,7 +17,7 @@ module TranslationCenter
     # POST /translations/1/unvote
     def unvote
       @translation = Translation.find(trans_params[:translation_id])
-      current_user.unlike @translation
+      translator_current_user.unlike @translation
       respond_to do |format|
         format.js
       end
@@ -43,7 +43,7 @@ module TranslationCenter
         format.js
       end
     end
-  
+
     # DELETE /translations/1
     # DELETE /translations/1.json
     def destroy

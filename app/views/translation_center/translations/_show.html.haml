@@ -1,9 +1,9 @@
 .well.well-small.translation_box{ id: "translation_id_#{translation.id}", 'data-key-id' => translation.translation_key.id }
-  
+
   %div{class: "translation_info #{language_direction(to_lang)}"}
     %span
       = translation.value
-    
+
     - if translation_admin?
       = link_to '×', translation_path(translation), method: :delete, data: { confirm: t('translation_center.actions.are_you_sure', :default => 'Are you sure?') }, class: 'close', remote: true
     %br
@@ -11,7 +11,7 @@
     %small.pull-right
       %em
         = t('.by')
-        - if translation.translator == current_user
+        - if translation.translator == translator_current_user
           = t('.you')
         - else
           = translation.translator.send(TranslationCenter::CONFIG['identifier_type'])
@@ -22,14 +22,12 @@
       = render 'translation_center/translations/accept_translation', translation: translation
     .votes_count.badge.badge-success.pull-right
       %span.count{ 'data-translation-id' => translation.id }
-        
+
       = t('.votings')
     %a.pull-right{href: '#'}
-      - voted = current_user.voted_on?(translation)
+      - voted = translator_current_user.voted_on?(translation)
       %span.badge.pull-left.translations_vote{ class: "#{voted ? 'badge-success' : ''}", 'data-translation-id' => translation.id,  voted: voted.to_s}
         - if voted
           = t('.unvote')
         - else
           = t('.vote')
-
-

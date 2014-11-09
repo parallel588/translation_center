@@ -8,7 +8,7 @@ module TranslationCenter
     CHANGES_PER_PAGE = 5
     NUMBER_PER_PAGE = 15
 
-    belongs_to :translation_key
+    belongs_to :translation_key, class_name: 'TranslationCenter::TranslationKey'
     belongs_to :translator, polymorphic: true
 
     alias_method :key, :translation_key
@@ -66,7 +66,7 @@ module TranslationCenter
         self.translation_key.reload
         self.update_attribute(:status, 'accepted')
       end
-      
+
     end
 
     # unaccept a translation

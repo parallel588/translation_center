@@ -25,12 +25,12 @@ module TranslationCenter
   end
 
   # gets the translation of a a key in certian lang and inserts it in the db
-  # returns true if the translation was fonud in yaml 
+  # returns true if the translation was fonud in yaml
   def self.yaml2db_key(locale, translation_key, translator, all_yamls)
     I18n.locale = locale
-    translation = TranslationCenter::Translation.find_or_initialize_by_translation_key_id_and_lang_and_translator_id(translation_key.id, locale.to_s, translator.id)
+    translation = TranslationCenter::Translation.where(translation_key_id: translation_key.id, lang: locale.to_s, translator_id: translator.id).first_or_initialize
     translation.translator_type = TranslationCenter::CONFIG['translator_type']
-    
+
     # get the translation for this key from the yamls
     value = get_translation_from_hash(translation_key.name, all_yamls[locale])
 
@@ -56,7 +56,7 @@ module TranslationCenter
     # the db in every locale
     keys.each do |key|
 
-      translation_key = TranslationCenter::TranslationKey.find_or_initialize_by_name(key)
+      translation_key = TranslationCenter::TranslationKey.where(name: key).first_or_initialize
       if translation_key.new_record?
         translation_key.save
         new_keys += 1
@@ -77,7 +77,6 @@ module TranslationCenter
 
   # take the yaml translations and update the db with them
   def self.yaml2db(locale=nil)
-
     # prepare translator by creating the translator if he doesn't exist
     translator = TranslationCenter.prepare_translator
 
@@ -89,11 +88,12 @@ module TranslationCenter
     end
 
     # Make sure we've loaded the translations
-    I18n.backend.send(:init_translations)
+    #I18n.backend.send(:init_translations)
+    I18n.backend.backends.each { |j| j.send(:init_translations) if j.respond_to?(:init_translations, true) }
     puts "#{I18n.available_locales.size} #{I18n.available_locales.size == 1 ? 'locale' : 'locales'} available: #{I18n.available_locales.join(', ')}"
 
     # Get all keys from all locales
-    all_yamls = I18n.backend.send(:translations)
+    all_yamls = I18n.backend.backends.find {|j| j.respond_to?(:translations, true) }.try(:send, :translations)
     all_keys = all_yamls.collect do |check_locale, translations|
       collect_keys([], translations).sort
     end.flatten.uniq
@@ -116,7 +116,7 @@ module TranslationCenter
       puts "Started exporting translations in #{locale}"
       TranslationCenter::TranslationKey.translated(locale).each do |key|
         begin
-          key.add_to_hash(result, locale)  
+          key.add_to_hash(result, locale)
         rescue
           puts "Error writing key: #{key.name} to yaml for #{locale}"
         end
@@ -125,7 +125,7 @@ module TranslationCenter
         file.write({locale.to_s => result}.ya2yaml)
       end
       puts "Done exporting translations of #{locale} to #{locale.to_s}.yml"
-    end 
+    end
   end
 
 end
