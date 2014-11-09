@@ -23,8 +23,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'haml-rails', "0.5.3"
   s.add_dependency 'acts_as_votable', "0.10.0"
   s.add_dependency 'ya2yaml', "0.31"
-  s.add_dependency 'font-awesome-rails', "4.1.0.0"
-  # s.add_dependency 'audited-activerecord'
-  s.add_dependency 'jquery-ui-rails', "5.0.0"
+  s.add_dependency 'font-awesome-rails', "~> 4.1", ">= 4.1.0.0"
+  s.add_dependency 'audited-activerecord'
+  s.add_dependency 'jquery-ui-rails', "~> 4.1.0"
 
 end
