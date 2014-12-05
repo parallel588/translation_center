@@ -27,7 +27,7 @@ module TranslationCenter
     protected
 
     def authenticate_translator_user!
-      (TranslationCenter::CONFIG['authentication_method'] || 'authenticate_user!').to_sym
+      send(TranslationCenter::CONFIG['authentication_method'] || 'authenticate_user!')
     end
 
     def translator_current_user
