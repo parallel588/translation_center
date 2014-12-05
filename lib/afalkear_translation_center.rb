@@ -1,3 +1,4 @@
+require "translation_center/versionrequire "translation_center/engine""
 require "translation_center/engine"
 require "translation_center/acts_as_translator"
 require "translation_center/translation_helpers"
