@@ -35,7 +35,7 @@ module TranslationCenter
     value = get_translation_from_hash(translation_key.name, all_yamls[locale])
 
     # if the value is not empty and is different from the existing value the update
-    if !value.blank? && value != translation.value
+    if !value.is_a?(Proc) && !value.blank? && value != translation.value
       translation.update_attribute(:value, value)
       # accept this yaml translation
       translation.accept if TranslationCenter::CONFIG['yaml2db_translations_accepted']
