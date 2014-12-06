@@ -16,9 +16,9 @@ module TranslationCenter
     # set language user translating to
     def set_language_to
       session[:lang_to] = center_params[:lang].to_sym
-      
+
       respond_to do |format|
-        format.html { redirect_to root_url } 
+        format.html { redirect_to root_url }
         format.js { render nothing: true }
       end
     end
@@ -43,7 +43,7 @@ module TranslationCenter
     def search_activity
       @translations_changes = ActivityQuery.new(center_params[:activity_query]).activities.offset(Translation::CHANGES_PER_PAGE * (@page - 1)).limit(Translation::CHANGES_PER_PAGE)
       @total_pages =  (ActivityQuery.new(center_params[:activity_query]).activities.count / (Translation::CHANGES_PER_PAGE * 1.0)).ceil
-      
+
       respond_to do |format|
         format.js
       end
@@ -53,7 +53,7 @@ module TranslationCenter
       # if locale is all then send no locale
       locale = center_params[:locale] == 'all' ? nil : center_params[:locale]
       TranslationCenter.send center_params[:manage_action], locale
-
+      I18n.reload!
       respond_to do |format|
         format.js
       end
